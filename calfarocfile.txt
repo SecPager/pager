@@ -1,1 +1,2 @@
 Hi. Thi is me!
+I am learning Git!
