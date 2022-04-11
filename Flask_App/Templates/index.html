@@ -1,0 +1,27 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Encrypted Paging Service</title>
+</head>
+
+<body>
+  <form method="post" action="/send">
+    <label for="message">Pager target:</label><br><br>
+    <select name="dropdown">
+      {% for id_ in ids %}
+
+      <option value="{{id_['name']}}">{{id_['name']}}</option>
+      {% endfor %}
+    </select><br><br>
+    <label for="message">Message to Send:</label><br><br>
+    <input name="text" rows="10" cols="60" placeholder="Enter pager message to encrypt"
+      style="min-width: 20em;"><br><br>
+    <input type="submit" value="Send">
+  </form>
+  {{ test }}
+</body>
+
+</html>
