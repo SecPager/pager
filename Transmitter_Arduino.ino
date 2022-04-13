@@ -9,6 +9,7 @@ const int IV_LEN=24;
 const int CAP_LEN=4;
 const int TOTAL_LEN=MSG_LEN+KEY_LEN+IV_LEN+CAP_LEN;
 
+// Pin 12
 RH_ASK driver;
 
 void setup() {
