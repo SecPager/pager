@@ -1,60 +1,73 @@
 #include <AESLib.h>
+#include "base64.hpp"
 #include <RH_ASK.h>
-#include <SPI.h> // Not actualy used but needed to compile
+#include <SPI.h> // Not actually used but needed to compile
+
+const int MSG_LEN=48;
+const int KEY_LEN=24;
+const int IV_LEN=24;
+const int CAP_LEN=4;
+const int TOTAL_LEN=MSG_LEN+KEY_LEN+IV_LEN+CAP_LEN;
 
 RH_ASK driver;
 
-const int CAP_LEN=4;
-const int IV_LEN=24;
-const int MSG_LEN=48;
-const int TOTAL_LEN=CAP_LEN+IV_LEN+MSG_LEN;
-
-const int KEY_LEN=24;
-uint8_t key[KEY_LEN] = {0x76, 0x71, 0xc5, 0xd, 0xa0, 0xa6, 0x57, 0x9b, 0xdb, 0x7d, 0x80, 0x5d, 0xc5, 0x2b, 0x76, 0xff, 0x34, 0xa0, 0xf5, 0x48, 0xc8, 0x11, 0x74, 0xd0};
-uint8_t cap[CAP_LEN] = {0x00, 0x00, 0x00, 0x01};
-uint8_t iv[IV_LEN];
-uint8_t data[MSG_LEN];
-bool dirty = true;
-
 void setup() {
-  Serial.begin(9600);  // Debugging only
-  if (!driver.init())
-    Serial.println("init failed");
+    Serial.begin(9600);    // Debugging only
+    if (!driver.init())
+        Serial.println("init failed");
 }
 
 void loop() {
-  uint8_t buf[TOTAL_LEN];
-  uint8_t buflen = 36;
-  if (driver.recv(buf, &buflen)) {
-    if (buf[0] == 0) {
-      dirty = false;
-      uint8_t data[MSG_LEN];
+  // send data only when you receive data:
+  if (Serial.available() > 0) {
+    char binary[TOTAL_LEN];
+    memset(binary, 0, TOTAL_LEN); // array filled with 0x00s
+    Serial.readBytes(binary, TOTAL_LEN);
 
-      for (int i = 0; i < CAP_LEN; i++) {
-        if (cap[i] != buf[1+i]) {
-          return;
-        }
-      }
-      for (int i = 0; i < IV_LEN; i++) {
-        iv[i] = buf[1+i+CAP_LEN];
-      }
+    uint8_t cap[CAP_LEN];
+    uint8_t key[KEY_LEN];
+    uint8_t iv[IV_LEN];
+    char msg[MSG_LEN];
+    uint8_t outgoing_0[1+CAP_LEN+IV_LEN];
+    outgoing_0[0] = 0x00;
+    uint8_t outgoing_1[1+MSG_LEN];
+    outgoing_1[0] = 0x01;
 
-    } else {
-      if (dirty) {
-        return;
-      }
-      dirty = true;
-
-      for (int i = 0; i < MSG_LEN; i++) {
-        data[i] = buf[1+i];
-      }
-      aes192_cbc_dec(key, iv, data, sizeof(data)); // requires data to be %16 == 0
-      {
-        int i = 0;
-        while (data[i] >= 0x09 && data[i] <= 0x7e) i++;
-        data[i] = 0;
-        Serial.println((char *)data);
-      }
+    for (int i = 0; i < CAP_LEN; i++) {
+      cap[i] = binary[i];
+      outgoing_0[1+i] = binary[i];
     }
+    for (int i = 0; i < KEY_LEN; i++) {
+      key[i] = binary[i+CAP_LEN];
+    }
+    for (int i = 0; i < IV_LEN; i++) {
+      iv[i] = binary[i+CAP_LEN+KEY_LEN];
+      outgoing_0[1+i+CAP_LEN] = binary[i+CAP_LEN+KEY_LEN];
+    }
+    int i = 0;
+    for (i = 0; i < MSG_LEN; i++) {
+      msg[i] = binary[i+CAP_LEN+KEY_LEN+IV_LEN];
+    }
+
+    // padding section - our text string can be up to 255 characters long
+    uint8_t dataWithPad[MSG_LEN];
+    memset(dataWithPad, 0, sizeof(dataWithPad)); // array filled with 0x00s
+    memcpy(dataWithPad, msg, strlen(msg)); // array filled with data and then 0x00s as padding
+
+    aes192_cbc_enc(key, iv, dataWithPad, sizeof(dataWithPad)); // requires data to be %16 == 0
+
+    for (int i = 0; i < MSG_LEN; i++) {
+      outgoing_1[1+i] = dataWithPad[i];
+    }
+
+    for (int i = 0; i < 1; i++) {
+      driver.send(outgoing_0, 1+CAP_LEN+IV_LEN);
+      driver.waitPacketSent();
+      delay(100);
+      driver.send(outgoing_1, 1+MSG_LEN);
+      driver.waitPacketSent();
+      delay(100);
+    }
+
   }
 }
