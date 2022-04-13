@@ -11,7 +11,7 @@ __A Secure Page-like Endpoint Communication Device.__
 
 ## Key Features
 
-* End-to-end encryption using [AES-192](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
+* End-to-end encryption using [AES-192](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard), CBC mode
 * Radio communication over 433 MHz
 * No transmission capabilities from endpoint devices
 
