@@ -2,6 +2,12 @@
 <h1 align="center">
   SecPager
 </h1>
+  
+   
+  
+  
+  
+![All](https://github.com/SecPager/pager/blob/main/all_systems.jpg)
 
 __A Secure Page-like Endpoint Communication Device.__
 
@@ -39,6 +45,8 @@ The private key should be generated externally and inserted into the code.
 
 Follow our schematics for the hardware to set this up.
 
+![Receive](https://github.com/SecPager/pager/blob/main/receiver.png)
+
 ### The Arduino—Send
 
 The process is the same as the receiving Arduino. The dependencies are [RadioHead ASK
@@ -48,6 +56,8 @@ library](https://www.arduino.cc/reference/en/libraries/aeslib/) for
 transmission and encryption.
 
 Follow our schematics for the hardware to set this up, and connect it to your server via USB.
+
+![Transmitter](https://github.com/SecPager/pager/blob/main/transmitter.png)
 
 ### The Server
 
