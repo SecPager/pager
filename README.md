@@ -33,7 +33,7 @@ needs to be uploaded to your endpoint Arduino. It depends on the
 [RadioHead ASK
 library](https://github.com/PaulStoffregen/RadioHead/blob/master/RH_ASK.h)
 and the [Arduino AESLib
-library](https://www.arduino.cc/reference/en/libraries/aeslib/) for
+library](https://github.com/DavyLandman/AESLib/blob/master/AESLib.c) for
 reception and encryption.
 
 Once you have the dependencies installed, you can upload the code to the
