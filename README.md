@@ -9,7 +9,7 @@
   
 ![All](https://github.com/SecPager/pager/blob/main/all_systems.jpg)
 
-__A Secure Page-like Endpoint Communication Device.__
+__A Secure Pager-like Endpoint Communication Device.__
 
 [Key Features](#key-features) •
 [Installation](#installation) •
