@@ -52,7 +52,7 @@ Follow our schematics for the hardware to set this up.
 The process is the same as the receiving Arduino. The dependencies are [RadioHead ASK
 library](https://github.com/PaulStoffregen/RadioHead/blob/master/RH_ASK.h)
 and the [Arduino AESLib
-library](https://www.arduino.cc/reference/en/libraries/aeslib/) for
+library](https://github.com/DavyLandman/AESLib/blob/master/AESLib.c) for
 transmission and encryption.
 
 Follow our schematics for the hardware to set this up, and connect it to your server via USB.
